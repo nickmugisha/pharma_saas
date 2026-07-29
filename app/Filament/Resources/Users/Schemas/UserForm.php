@@ -32,14 +32,18 @@ class UserForm
                             ->maxLength(255),
 
                         TextInput::make('password')
-                            ->label('Password')
-                            ->password()
-                            ->minLength(12)
-                            ->required(fn (string $operation): bool => $operation === 'create')
-                            ->dehydrated(fn (?string $state): bool => filled($state))
-                            ->helperText(
-                                'Required when creating an account. Leave empty while editing to preserve the current password.'
-                            ),
+    ->label('Password')
+    ->password()
+    ->autocomplete('new-password')
+    ->afterStateHydrated(
+        fn (TextInput $component) => $component->state(null)
+    )
+    ->minLength(12)
+    ->required(fn (string $operation): bool => $operation === 'create')
+    ->dehydrated(fn (?string $state): bool => filled($state))
+    ->helperText(
+        'Required when creating an account. Leave empty while editing to preserve the current password.'
+    ),
 
                         DateTimePicker::make('email_verified_at')
                             ->label('Email verified at')
