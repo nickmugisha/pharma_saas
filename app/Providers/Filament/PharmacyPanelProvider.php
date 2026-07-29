@@ -18,6 +18,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Auth\MultiFactor\App\AppAuthentication;
 
 class PharmacyPanelProvider extends PanelProvider
 {
@@ -27,6 +28,16 @@ class PharmacyPanelProvider extends PanelProvider
             ->id('pharmacy')
             ->path('pharmacy')
             ->login()
+            ->passwordReset()
+            ->emailVerification()
+->emailChangeVerification()
+->multiFactorAuthentication([
+    AppAuthentication::make()
+        ->recoverable()
+        ->brandName('Pharma SaaS — Pharmacy'),
+])
+->profile(isSimple: false)
+->revealablePasswords(false)
            ->brandName('Pharma SaaS — Pharmacy')
            ->brandLogo(asset('images/pharma-saas-pharmacy.svg'))
 ->brandLogoHeight('2.75rem')

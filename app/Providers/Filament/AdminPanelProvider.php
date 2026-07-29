@@ -17,6 +17,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Auth\MultiFactor\App\AppAuthentication;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -27,6 +28,16 @@ class AdminPanelProvider extends PanelProvider
             ->id('super-admin')
             ->path('super-admin')
             ->login()
+            ->passwordReset()
+            ->emailVerification()
+->emailChangeVerification()
+->multiFactorAuthentication([
+    AppAuthentication::make()
+        ->recoverable()
+        ->brandName('Pharma SaaS — Super Admin'),
+])
+->profile(isSimple: false)
+->revealablePasswords(false)
             ->brandName('Pharma SaaS — Super Admin')
             ->brandLogo(asset('images/pharma-saas-super-admin.svg'))
 ->brandLogoHeight('2.75rem')

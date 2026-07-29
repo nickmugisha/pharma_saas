@@ -9,11 +9,26 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthentication;
+use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthenticationRecovery;
+use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
+use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-class User extends Authenticatable implements FilamentUser
-{
+class User extends Authenticatable implements
+    FilamentUser,
+    MustVerifyEmail,
+    HasAppAuthentication,
+    HasAppAuthenticationRecovery{
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+   use HasFactory;
+use Notifiable;
+use InteractsWithAppAuthentication;
+use InteractsWithAppAuthenticationRecovery;
+
+    protected $attributes = [
+    'is_active' => true,
+];
 
     /**
      * The attributes that are mass assignable.
@@ -34,6 +49,8 @@ class User extends Authenticatable implements FilamentUser
     protected $hidden = [
         'password',
         'remember_token',
+        'app_authentication_secret',
+'app_authentication_recovery_codes',
     ];
 
     /**
@@ -42,15 +59,21 @@ class User extends Authenticatable implements FilamentUser
      * @return array<string, string>
      */
     protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+{
+    return [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'is_active' => 'boolean',
+        'blocked_at' => 'datetime',
+        'last_login_at' => 'datetime',
+    ];
+}
+public function canAccessPanel(Panel $panel): bool
+{
+    if (! $this->is_active) {
+        return false;
     }
 
-    public function canAccessPanel(Panel $panel): bool
-{
     return app()->environment(['local', 'testing']);
 }
 }
