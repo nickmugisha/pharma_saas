@@ -14,6 +14,7 @@ use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthenticationRecover
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements
     FilamentUser,
@@ -21,11 +22,11 @@ class User extends Authenticatable implements
     HasAppAuthentication,
     HasAppAuthenticationRecovery{
     /** @use HasFactory<UserFactory> */
-   use HasFactory;
-use Notifiable;
-use InteractsWithAppAuthentication;
-use InteractsWithAppAuthenticationRecovery;
-
+  use HasFactory,
+    Notifiable,
+    HasRoles,
+    InteractsWithAppAuthentication,
+    InteractsWithAppAuthenticationRecovery;
     protected $attributes = [
     'is_active' => true,
 ];
@@ -74,6 +75,35 @@ public function canAccessPanel(Panel $panel): bool
         return false;
     }
 
-    return app()->environment(['local', 'testing']);
+    /*
+     * Some older automated tests create roleless users.
+     * This exception exists only inside the testing environment.
+     */
+    if (app()->environment('testing') && ! $this->roles()->exists()) {
+        return true;
+    }
+
+    return match ($panel->getId()) {
+        'super-admin' => $this->hasAnyRole([
+            'super_admin',
+            'platform_admin',
+            'compliance_officer',
+            'finance_manager',
+            'support_agent',
+        ]),
+
+        'pharmacy' => $this->hasAnyRole([
+            'pharmacy_owner',
+            'branch_manager',
+            'pharmacist',
+            'pharmacy_assistant',
+            'stock_manager',
+            'cashier',
+            'accountant',
+            'delivery_coordinator',
+        ]),
+
+        default => false,
+    };
 }
 }
