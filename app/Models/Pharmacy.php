@@ -62,6 +62,10 @@ public function purchaseOrders(): HasMany
 {
     return $this->hasMany(PurchaseOrder::class);
 }
+public function inventoryAlerts(): HasMany
+{
+    return $this->hasMany(InventoryAlert::class);
+}
 
 public function suppliers(): HasMany
 {

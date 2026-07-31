@@ -83,6 +83,13 @@ public function supplierInvoices(): HasMany
         'pharmacy_branch_id',
     );
 }
+public function inventoryAlerts(): HasMany
+{
+    return $this->hasMany(
+        InventoryAlert::class,
+        'pharmacy_branch_id',
+    );
+}
 
     public function users(): HasMany
     {

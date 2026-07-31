@@ -25,6 +25,10 @@ class PharmacyMedicine extends Model
         'is_available',
         'is_visible_online',
         'status',
+        'minimum_stock_level',
+    'reorder_quantity',
+    'expiry_warning_days',
+    'alerts_enabled',
     ];
 
     protected $attributes = [
@@ -41,8 +45,17 @@ class PharmacyMedicine extends Model
             'online_price' => 'decimal:2',
             'is_available' => 'boolean',
             'is_visible_online' => 'boolean',
+             'minimum_stock_level' => 'decimal:3',
+        'reorder_quantity' => 'decimal:3',
+        'expiry_warning_days' => 'integer',
+        'alerts_enabled' => 'boolean',
         ];
     }
+
+    public function branchInventorySettings(): HasMany
+{
+    return $this->hasMany(BranchMedicineSetting::class);
+}
 
     public function purchaseOrderItems(): HasMany
 {
@@ -69,6 +82,11 @@ class PharmacyMedicine extends Model
 public function stockMovements(): HasMany
 {
     return $this->hasMany(StockMovement::class);
+}
+
+public function inventoryAlerts(): HasMany
+{
+    return $this->hasMany(InventoryAlert::class);
 }
 
     public function medicine(): BelongsTo

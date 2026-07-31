@@ -5,6 +5,7 @@ namespace App\Actions\Stock;
 use App\Models\MedicineBatch;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderItem;
+use App\Models\BranchMedicineSetting;
 use App\Models\PurchaseReceipt;
 use App\Models\PurchaseReceiptItem;
 use App\Models\StockMovement;
@@ -12,6 +13,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use App\Actions\Stock\SyncInventoryAlerts;
 
 class ReceivePurchaseOrder
 {
@@ -87,6 +89,36 @@ class ReceivePurchaseOrder
                     ->where('purchase_order_id', $order->id)
                     ->lockForUpdate()
                     ->firstOrFail();
+
+                
+                $pharmacyMedicine = $orderItem->pharmacyMedicine;
+
+abort_unless(
+    $pharmacyMedicine
+    && (int) $pharmacyMedicine->pharmacy_id
+        === (int) $order->pharmacy_id,
+    422,
+);
+
+BranchMedicineSetting::firstOrCreate(
+    [
+        'pharmacy_branch_id' =>
+            $order->pharmacy_branch_id,
+        'pharmacy_medicine_id' =>
+            $orderItem->pharmacy_medicine_id,
+    ],
+    [
+        'pharmacy_id' => $order->pharmacy_id,
+        'minimum_stock_level' =>
+            $pharmacyMedicine->minimum_stock_level ?? 0,
+        'reorder_quantity' =>
+            $pharmacyMedicine->reorder_quantity ?? 0,
+        'expiry_warning_days' =>
+            $pharmacyMedicine->expiry_warning_days ?? 90,
+        'alerts_enabled' =>
+            $pharmacyMedicine->alerts_enabled ?? true,
+    ],
+);
 
                 $quantity = round(
                     (float) ($line['quantity_received'] ?? 0),
@@ -265,6 +297,19 @@ class ReceivePurchaseOrder
                 'status' => 'completed',
                 'received_at' => now(),
             ])->save();
+
+            foreach (
+    $receipt->items
+        ->pluck('pharmacy_medicine_id')
+        ->unique()
+    as $pharmacyMedicineId
+) {
+    app(SyncInventoryAlerts::class)->handle(
+        pharmacyId: $order->pharmacy_id,
+        branchId: $order->pharmacy_branch_id,
+        pharmacyMedicineId: (int) $pharmacyMedicineId,
+    );
+}
 
             return $receipt->fresh([
                 'items.medicineBatch',
