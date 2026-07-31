@@ -68,6 +68,22 @@ class PharmacyBranch extends Model
         return $this->belongsTo(Pharmacy::class);
     }
 
+    public function purchaseOrders(): HasMany
+{
+    return $this->hasMany(
+        PurchaseOrder::class,
+        'pharmacy_branch_id',
+    );
+}
+
+public function supplierInvoices(): HasMany
+{
+    return $this->hasMany(
+        SupplierInvoice::class,
+        'pharmacy_branch_id',
+    );
+}
+
     public function users(): HasMany
     {
         return $this->hasMany(User::class, 'pharmacy_branch_id');

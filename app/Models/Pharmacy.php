@@ -48,6 +48,26 @@ class Pharmacy extends Model
     return $this->hasMany(PharmacyMedicine::class);
 }
 
+public function supplierInvoices(): HasMany
+{
+    return $this->hasMany(SupplierInvoice::class);
+}
+
+public function supplierPayments(): HasMany
+{
+    return $this->hasMany(SupplierPayment::class);
+}
+
+public function purchaseOrders(): HasMany
+{
+    return $this->hasMany(PurchaseOrder::class);
+}
+
+public function suppliers(): HasMany
+{
+    return $this->hasMany(Supplier::class);
+}
+
     protected static function booted(): void
     {
         static::creating(function (Pharmacy $pharmacy): void {
