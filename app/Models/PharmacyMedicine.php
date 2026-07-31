@@ -61,6 +61,16 @@ class PharmacyMedicine extends Model
         return $this->belongsTo(Pharmacy::class);
     }
 
+    public function medicineBatches(): HasMany
+{
+    return $this->hasMany(MedicineBatch::class);
+}
+
+public function stockMovements(): HasMany
+{
+    return $this->hasMany(StockMovement::class);
+}
+
     public function medicine(): BelongsTo
     {
         return $this->belongsTo(Medicine::class);
