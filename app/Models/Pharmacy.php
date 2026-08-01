@@ -78,6 +78,16 @@ public function salePayments(): HasMany
     return $this->hasMany(SalePayment::class);
 }
 
+public function customers(): HasMany
+{
+    return $this->hasMany(Customer::class);
+}
+
+public function customerActivities(): HasMany
+{
+    return $this->hasMany(CustomerActivity::class);
+}
+
 
 public function suppliers(): HasMany
 {

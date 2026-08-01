@@ -57,6 +57,10 @@ class RolePermissionSeeder extends Seeder
             'purchases.view',
             'purchases.manage',
 
+            // Customers
+'customers.view',
+'customers.manage',
+
             // Sales
             'sales.view',
             'sales.manage',
@@ -92,6 +96,7 @@ class RolePermissionSeeder extends Seeder
                 || str_starts_with($permission, 'employees.')
                 || str_starts_with($permission, 'medicines.')
                 || str_starts_with($permission, 'stock.')
+                || str_starts_with($permission, 'customers.')
                 || str_starts_with($permission, 'purchases.')
                 || str_starts_with($permission, 'sales.')
                 || str_starts_with($permission, 'prescriptions.')
@@ -154,6 +159,8 @@ class RolePermissionSeeder extends Seeder
                 'branches.manage',
                 'employees.manage',
                 'medicines.view',
+                'customers.view',
+'customers.manage',
                 'sales.manage',
                 'sales.void',
                 'medicines.manage',
@@ -182,6 +189,8 @@ class RolePermissionSeeder extends Seeder
                 'medicines.view',
                 'stock.view',
                 'sales.view',
+                'customers.view',
+'customers.manage',
                 'sales.create',
                 'prescriptions.view',
                 'prescriptions.validate',
@@ -194,6 +203,8 @@ class RolePermissionSeeder extends Seeder
             'pharmacy_assistant' => [
                 'pharmacy.dashboard.view',
                 'medicines.view',
+                'customers.view',
+'customers.manage',
                 'stock.view',
                 'sales.view',
                 'sales.create',
@@ -218,6 +229,8 @@ class RolePermissionSeeder extends Seeder
                 'pharmacy.dashboard.view',
                 'medicines.view',
                 'stock.view',
+                'customers.view',
+'customers.manage',
                 'sales.manage',
                 'sales.view',
                 'sales.create',
@@ -227,6 +240,7 @@ class RolePermissionSeeder extends Seeder
             'accountant' => [
                 'pharmacy.dashboard.view',
                 'purchases.view',
+                'customers.view',
                 'sales.view',
                 'pharmacy.finance.view',
                 'pharmacy.finance.manage',
@@ -236,6 +250,7 @@ class RolePermissionSeeder extends Seeder
             'delivery_coordinator' => [
                 'pharmacy.dashboard.view',
                 'sales.view',
+                'customers.view',
                 'patients.view',
                 'deliveries.view',
                 'deliveries.manage',

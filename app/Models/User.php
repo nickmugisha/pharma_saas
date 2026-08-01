@@ -15,6 +15,7 @@ use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable implements
     FilamentUser,
@@ -69,6 +70,20 @@ class User extends Authenticatable implements
         'last_login_at' => 'datetime',
     ];
 }
+
+public function customerAccounts(): HasMany
+{
+    return $this->hasMany(Customer::class);
+}
+
+public function customerActivities(): HasMany
+{
+    return $this->hasMany(
+        CustomerActivity::class,
+        'actor_user_id',
+    );
+}
+
 public function canAccessPanel(Panel $panel): bool
 {
     if (! $this->is_active) {

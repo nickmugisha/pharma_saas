@@ -99,6 +99,22 @@ public function sales(): HasMany
     );
 }
 
+public function registeredCustomers(): HasMany
+{
+    return $this->hasMany(
+        Customer::class,
+        'registered_branch_id',
+    );
+}
+
+public function customerActivities(): HasMany
+{
+    return $this->hasMany(
+        CustomerActivity::class,
+        'pharmacy_branch_id',
+    );
+}
+
     public function users(): HasMany
     {
         return $this->hasMany(User::class, 'pharmacy_branch_id');

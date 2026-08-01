@@ -21,6 +21,7 @@ class Sale extends Model
         'sale_number',
         'receipt_number',
         'channel',
+        'customer_id',
         'sold_at',
         'completed_at',
         'voided_at',
@@ -68,6 +69,11 @@ class Sale extends Model
             'change_amount' => 'decimal:2',
         ];
     }
+
+    public function customer(): BelongsTo
+{
+    return $this->belongsTo(Customer::class);
+}
 
     protected static function booted(): void
     {
