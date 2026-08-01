@@ -57,6 +57,11 @@ class PharmacyMedicine extends Model
     return $this->hasMany(BranchMedicineSetting::class);
 }
 
+public function saleItems(): HasMany
+{
+    return $this->hasMany(SaleItem::class);
+}
+
     public function purchaseOrderItems(): HasMany
 {
     return $this->hasMany(PurchaseOrderItem::class);

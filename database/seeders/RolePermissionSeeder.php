@@ -59,6 +59,8 @@ class RolePermissionSeeder extends Seeder
 
             // Sales
             'sales.view',
+            'sales.manage',
+            'sales.void',
             'sales.create',
             'sales.cancel',
             'sales.refund',
@@ -152,6 +154,8 @@ class RolePermissionSeeder extends Seeder
                 'branches.manage',
                 'employees.manage',
                 'medicines.view',
+                'sales.manage',
+                'sales.void',
                 'medicines.manage',
                 'stock.view',
                 'stock.manage',
@@ -214,6 +218,7 @@ class RolePermissionSeeder extends Seeder
                 'pharmacy.dashboard.view',
                 'medicines.view',
                 'stock.view',
+                'sales.manage',
                 'sales.view',
                 'sales.create',
                 'patients.view',

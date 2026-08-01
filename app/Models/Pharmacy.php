@@ -67,6 +67,18 @@ public function inventoryAlerts(): HasMany
     return $this->hasMany(InventoryAlert::class);
 }
 
+
+public function sales(): HasMany
+{
+    return $this->hasMany(Sale::class);
+}
+
+public function salePayments(): HasMany
+{
+    return $this->hasMany(SalePayment::class);
+}
+
+
 public function suppliers(): HasMany
 {
     return $this->hasMany(Supplier::class);

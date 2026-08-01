@@ -91,6 +91,14 @@ public function inventoryAlerts(): HasMany
     );
 }
 
+public function sales(): HasMany
+{
+    return $this->hasMany(
+        Sale::class,
+        'pharmacy_branch_id',
+    );
+}
+
     public function users(): HasMany
     {
         return $this->hasMany(User::class, 'pharmacy_branch_id');

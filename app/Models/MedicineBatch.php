@@ -91,6 +91,11 @@ class MedicineBatch extends Model
     return $this->hasMany(InventoryAlert::class);
 }
 
+public function saleItemBatches(): HasMany
+{
+    return $this->hasMany(SaleItemBatch::class);
+}
+
     public function stockMovements(): HasMany
     {
         return $this->hasMany(StockMovement::class);
