@@ -14,6 +14,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use App\Actions\Prescriptions\RecordPrescriptionActivity;
+use App\Models\Prescription;
+use App\Models\PrescriptionDispensing;
+use App\Models\PrescriptionDispensingItem;
+use App\Models\PrescriptionItem;
 
 class VoidCompletedSale
 {
@@ -76,6 +81,11 @@ class VoidCompletedSale
                         'This sale has already been voided.',
                 ]);
             }
+
+            $prescriptionReversal =
+    $this->lockPrescriptionReversal(
+        $lockedSale,
+    );
 
             $allocations = SaleItemBatch::query()
                 ->whereHas(
@@ -275,6 +285,15 @@ class VoidCompletedSale
                 'void_reason' => $reason,
             ])->save();
 
+            if ($prescriptionReversal !== null) {
+    $this->reversePrescriptionDispensing(
+        user: $user,
+        sale: $lockedSale,
+        reason: $reason,
+        context: $prescriptionReversal,
+    );
+}
+
             foreach (
                 array_unique($affectedMedicineIds)
                 as $pharmacyMedicineId
@@ -299,4 +318,305 @@ class VoidCompletedSale
             ]);
         }, attempts: 5);
     }
+
+    private function lockPrescriptionReversal(
+    Sale $sale,
+): ?array {
+    $dispensing = PrescriptionDispensing::query()
+        ->where('sale_id', $sale->id)
+        ->where(
+            'pharmacy_id',
+            $sale->pharmacy_id,
+        )
+        ->lockForUpdate()
+        ->first();
+
+    if ($dispensing === null) {
+        return null;
+    }
+
+    if (
+        (int) $dispensing->pharmacy_branch_id
+        !== (int) $sale->pharmacy_branch_id
+    ) {
+        throw ValidationException::withMessages([
+            'prescription' =>
+                'The prescription dispensing branch does not match the sale branch.',
+        ]);
+    }
+
+    if (
+        $dispensing->status
+        !== PrescriptionDispensing::STATUS_COMPLETED
+    ) {
+        throw ValidationException::withMessages([
+            'prescription' =>
+                'This prescription dispensing has already been reversed.',
+        ]);
+    }
+
+    $dispensingItems =
+        PrescriptionDispensingItem::query()
+            ->where(
+                'prescription_dispensing_id',
+                $dispensing->id,
+            )
+            ->orderBy('id')
+            ->get();
+
+    if ($dispensingItems->isEmpty()) {
+        throw ValidationException::withMessages([
+            'prescription' =>
+                'The linked dispensing contains no medicine records.',
+        ]);
+    }
+
+    $prescription = Prescription::query()
+        ->whereKey($dispensing->prescription_id)
+        ->where(
+            'pharmacy_id',
+            $sale->pharmacy_id,
+        )
+        ->where(
+            'pharmacy_branch_id',
+            $sale->pharmacy_branch_id,
+        )
+        ->lockForUpdate()
+        ->first();
+
+    if ($prescription === null) {
+        throw ValidationException::withMessages([
+            'prescription' =>
+                'The linked prescription could not be restored.',
+        ]);
+    }
+
+    $prescriptionItems = PrescriptionItem::query()
+        ->where(
+            'prescription_id',
+            $prescription->id,
+        )
+        ->whereIn(
+            'id',
+            $dispensingItems->pluck(
+                'prescription_item_id',
+            ),
+        )
+        ->orderBy('id')
+        ->lockForUpdate()
+        ->get()
+        ->keyBy('id');
+
+    if (
+        $prescriptionItems->count()
+        !== $dispensingItems
+            ->pluck('prescription_item_id')
+            ->unique()
+            ->count()
+    ) {
+        throw ValidationException::withMessages([
+            'prescription' =>
+                'One or more prescription items could not be restored.',
+        ]);
+    }
+
+    return [
+        'dispensing' => $dispensing,
+        'dispensing_items' => $dispensingItems,
+        'prescription' => $prescription,
+        'prescription_items' =>
+            $prescriptionItems,
+    ];
+}
+
+private function reversePrescriptionDispensing(
+    User $user,
+    Sale $sale,
+    string $reason,
+    array $context,
+): void {
+    /** @var PrescriptionDispensing $dispensing */
+    $dispensing = $context['dispensing'];
+
+    /** @var Prescription $prescription */
+    $prescription = $context['prescription'];
+
+    $dispensingItems =
+        $context['dispensing_items'];
+
+    $prescriptionItems =
+        $context['prescription_items'];
+
+    $reversedItems = [];
+
+    foreach ($dispensingItems as $dispensingItem) {
+        /** @var PrescriptionItem|null $prescriptionItem */
+        $prescriptionItem =
+            $prescriptionItems->get(
+                $dispensingItem
+                    ->prescription_item_id,
+            );
+
+        if ($prescriptionItem === null) {
+            throw ValidationException::withMessages([
+                'prescription' =>
+                    'A prescription item could not be restored.',
+            ]);
+        }
+
+        $reversedQuantity = round(
+            (float) $dispensingItem
+                ->quantity_dispensed,
+            3,
+        );
+
+        $newQuantityDispensed = round(
+            max(
+                (float) $prescriptionItem
+                    ->quantity_dispensed
+                - $reversedQuantity,
+                0,
+            ),
+            3,
+        );
+
+        $quantityPrescribed = round(
+            (float) $prescriptionItem
+                ->quantity_prescribed,
+            3,
+        );
+
+        $itemStatus = match (true) {
+            $newQuantityDispensed <= 0.0005 =>
+                'pending',
+
+            $newQuantityDispensed + 0.0005
+                >= $quantityPrescribed =>
+                'dispensed',
+
+            default =>
+                'partially_dispensed',
+        };
+
+        $prescriptionItem->forceFill([
+            'quantity_dispensed' =>
+                $newQuantityDispensed,
+
+            'status' => $itemStatus,
+        ])->save();
+
+        $reversedItems[] = [
+            'prescription_item_id' =>
+                $prescriptionItem->id,
+
+            'prescribed_name' =>
+                $prescriptionItem
+                    ->prescribed_name,
+
+            'quantity_reversed' =>
+                $reversedQuantity,
+
+            'quantity_remaining_dispensed' =>
+                $newQuantityDispensed,
+        ];
+    }
+
+    $allPrescriptionItems =
+        PrescriptionItem::query()
+            ->where(
+                'prescription_id',
+                $prescription->id,
+            )
+            ->orderBy('id')
+            ->lockForUpdate()
+            ->get();
+
+    $allFullyDispensed =
+        $allPrescriptionItems->isNotEmpty()
+        && $allPrescriptionItems->every(
+            fn (
+                PrescriptionItem $item,
+            ): bool =>
+                (float) $item
+                    ->quantity_dispensed
+                + 0.0005
+                >= (float) $item
+                    ->quantity_prescribed,
+        );
+
+    $hasDispensedQuantity =
+        $allPrescriptionItems->contains(
+            fn (
+                PrescriptionItem $item,
+            ): bool =>
+                (float) $item
+                    ->quantity_dispensed
+                > 0.0005,
+        );
+
+    $prescriptionStatus = match (true) {
+        $allFullyDispensed =>
+            Prescription::STATUS_DISPENSED,
+
+        $hasDispensedQuantity =>
+            Prescription
+                ::STATUS_PARTIALLY_DISPENSED,
+
+        default =>
+            Prescription::STATUS_APPROVED,
+    };
+
+    $prescription->forceFill([
+        'status' => $prescriptionStatus,
+
+        'dispensed_at' =>
+            $allFullyDispensed
+                ? (
+                    $prescription->dispensed_at
+                    ?? now()
+                )
+                : null,
+    ])->save();
+
+    $dispensing->forceFill([
+        'status' =>
+            PrescriptionDispensing::STATUS_VOIDED,
+
+        'voided_by_user_id' => $user->id,
+        'voided_at' => now(),
+        'void_reason' => $reason,
+    ])->save();
+
+    app(RecordPrescriptionActivity::class)
+        ->handle(
+            actor: $user,
+            prescription: $prescription,
+            activityType:
+                'dispensing_voided',
+            title:
+                'Prescription dispensing reversed',
+            description: sprintf(
+                'Dispensing %s was reversed because sale %s was voided.',
+                $dispensing->dispensing_number,
+                $sale->sale_number,
+            ),
+            metadata: [
+                'dispensing_id' =>
+                    $dispensing->id,
+
+                'dispensing_number' =>
+                    $dispensing
+                        ->dispensing_number,
+
+                'sale_id' => $sale->id,
+
+                'sale_number' =>
+                    $sale->sale_number,
+
+                'reason' => $reason,
+
+                'items' => $reversedItems,
+            ],
+        );
+}
 }

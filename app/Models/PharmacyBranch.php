@@ -115,6 +115,30 @@ public function customerActivities(): HasMany
     );
 }
 
+public function prescriptions(): HasMany
+{
+    return $this->hasMany(
+        Prescription::class,
+        'pharmacy_branch_id',
+    );
+}
+
+public function prescriptionActivities(): HasMany
+{
+    return $this->hasMany(
+        PrescriptionActivity::class,
+        'pharmacy_branch_id',
+    );
+}
+
+public function prescriptionDispensings(): HasMany
+{
+    return $this->hasMany(
+        PrescriptionDispensing::class,
+        'pharmacy_branch_id',
+    );
+}
+
     public function users(): HasMany
     {
         return $this->hasMany(User::class, 'pharmacy_branch_id');

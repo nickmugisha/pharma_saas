@@ -75,6 +75,20 @@ class Sale extends Model
     return $this->belongsTo(Customer::class);
 }
 
+public function prescriptionDispensing(): HasOne
+{
+    return $this->hasOne(
+        PrescriptionDispensing::class,
+    );
+}
+
+public function prescriptionDispensingItem(): HasOne
+{
+    return $this->hasOne(
+        PrescriptionDispensingItem::class,
+    );
+}
+
     protected static function booted(): void
     {
         static::creating(function (Sale $sale): void {

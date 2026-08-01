@@ -88,6 +88,23 @@ public function customerActivities(): HasMany
     return $this->hasMany(CustomerActivity::class);
 }
 
+public function prescriptions(): HasMany
+{
+    return $this->hasMany(Prescription::class);
+}
+
+public function prescriptionActivities(): HasMany
+{
+    return $this->hasMany(PrescriptionActivity::class);
+}
+
+public function prescriptionDispensings(): HasMany
+{
+    return $this->hasMany(
+        PrescriptionDispensing::class,
+    );
+}
+
 
 public function suppliers(): HasMany
 {

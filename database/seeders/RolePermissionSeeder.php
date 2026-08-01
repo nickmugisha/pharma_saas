@@ -74,6 +74,10 @@ class RolePermissionSeeder extends Seeder
             'prescriptions.validate',
             'patients.view',
             'patients.manage',
+            'prescriptions.view',
+'prescriptions.manage',
+'prescriptions.validate',
+'prescriptions.dispense',
 
             // Delivery
             'deliveries.view',
@@ -193,6 +197,8 @@ class RolePermissionSeeder extends Seeder
 'customers.manage',
                 'sales.create',
                 'prescriptions.view',
+                'prescriptions.manage',
+                'prescriptions.dispense',
                 'prescriptions.validate',
                 'patients.view',
                 'patients.manage',
@@ -210,6 +216,7 @@ class RolePermissionSeeder extends Seeder
                 'sales.create',
                 'prescriptions.view',
                 'patients.view',
+                'prescriptions.manage',
             ],
 
             'stock_manager' => [

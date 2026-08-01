@@ -97,6 +97,12 @@ class Customer extends Model
         ->latest('occurred_at');
 }
 
+public function prescriptions(): HasMany
+{
+    return $this->hasMany(Prescription::class)
+        ->latest('created_at');
+}
+
    public function sales(): HasMany
 {
     return $this->hasMany(Sale::class)

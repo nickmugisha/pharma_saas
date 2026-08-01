@@ -382,7 +382,7 @@ class SaleForm
         return number_format((float) $quantity, 3).' unit(s)';
     }
 
-    private static function calculateSaleTotal(
+    public static function calculateSaleTotal(
         array $items,
     ): float {
         $total = 0.0;
@@ -455,7 +455,7 @@ class SaleForm
         return $total;
     }
 
-    private static function calculatePaymentTotal(
+    public static function calculatePaymentTotal(
         array $payments,
     ): float {
         return round(
@@ -470,7 +470,7 @@ class SaleForm
         );
     }
 
-    private static function paymentBalanceText(
+    public static function paymentBalanceText(
         array $items,
         array $payments,
     ): string {

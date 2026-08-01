@@ -76,6 +76,46 @@ public function customerAccounts(): HasMany
     return $this->hasMany(Customer::class);
 }
 
+public function dispensedPrescriptions(): HasMany
+{
+    return $this->hasMany(
+        PrescriptionDispensing::class,
+        'dispensed_by_user_id',
+    );
+}
+
+public function voidedPrescriptionDispensings(): HasMany
+{
+    return $this->hasMany(
+        PrescriptionDispensing::class,
+        'voided_by_user_id',
+    );
+}
+
+public function createdPrescriptions(): HasMany
+{
+    return $this->hasMany(
+        Prescription::class,
+        'created_by_user_id',
+    );
+}
+
+public function reviewedPrescriptions(): HasMany
+{
+    return $this->hasMany(
+        Prescription::class,
+        'reviewed_by_user_id',
+    );
+}
+
+public function prescriptionActivities(): HasMany
+{
+    return $this->hasMany(
+        PrescriptionActivity::class,
+        'actor_user_id',
+    );
+}
+
 public function customerActivities(): HasMany
 {
     return $this->hasMany(

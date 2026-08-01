@@ -33,9 +33,10 @@ class CompletePosSale
         array $saleData = [],
     ): Sale {
         abort_unless(
-            $user->can('sales.manage'),
-            403,
-        );
+    $user->can('sales.manage')
+        || $user->can('sales.create'),
+    403,
+);
 
         $pharmacyId = $user->pharmacy_id;
 
