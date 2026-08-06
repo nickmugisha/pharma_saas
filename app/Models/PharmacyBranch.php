@@ -143,4 +143,19 @@ public function prescriptionDispensings(): HasMany
     {
         return $this->hasMany(User::class, 'pharmacy_branch_id');
     }
+
+    public function marketplaceOffers(): HasMany
+    {
+        return $this->hasMany(MarketplaceOffer::class, 'pharmacy_branch_id');
+    }
+
+    public function marketplaceOrders(): HasMany
+    {
+        return $this->hasMany(MarketplaceOrder::class, 'pharmacy_branch_id');
+    }
+
+    public function marketplaceReservations(): HasMany
+    {
+        return $this->hasMany(MarketplaceStockReservation::class, 'pharmacy_branch_id');
+    }
 }

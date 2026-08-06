@@ -93,6 +93,24 @@ class MedicineForm
                             ->default('otc')
                             ->required(),
 
+                        Select::make('online_sale_mode')
+                            ->label('Online sale rule')
+                            ->options([
+                                'otc' => 'Order online without prescription',
+                                'prescription_required' => 'Prescription required before approval',
+                                'pharmacist_review' => 'Pharmacist review required',
+                                'in_store_only' => 'Visible online — in-store purchase only',
+                            ])
+                            ->default('otc')
+                            ->helperText(
+                                'Configure the legal and clinical online-order rule. Do not rely on medicine names.'
+                            )
+                            ->required(),
+
+                        Toggle::make('is_marketplace_featured')
+                            ->label('Feature on marketplace home page')
+                            ->default(false),
+
                         Toggle::make('is_active')
                             ->label('Active in central catalogue')
                             ->default(true),
@@ -194,6 +212,14 @@ class MedicineForm
                     ->schema([
                         Textarea::make('description')
                             ->rows(4)
+                            ->columnSpanFull(),
+
+
+                        Textarea::make('marketplace_summary')
+                            ->label('Marketplace summary')
+                            ->helperText('A clear, client-friendly summary shown on the public storefront.')
+                            ->rows(3)
+                            ->maxLength(1000)
                             ->columnSpanFull(),
 
                         Textarea::make('indications')

@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PharmacyMedicine extends Model
 {
@@ -26,9 +26,9 @@ class PharmacyMedicine extends Model
         'is_visible_online',
         'status',
         'minimum_stock_level',
-    'reorder_quantity',
-    'expiry_warning_days',
-    'alerts_enabled',
+        'reorder_quantity',
+        'expiry_warning_days',
+        'alerts_enabled',
     ];
 
     protected $attributes = [
@@ -45,27 +45,12 @@ class PharmacyMedicine extends Model
             'online_price' => 'decimal:2',
             'is_available' => 'boolean',
             'is_visible_online' => 'boolean',
-             'minimum_stock_level' => 'decimal:3',
-        'reorder_quantity' => 'decimal:3',
-        'expiry_warning_days' => 'integer',
-        'alerts_enabled' => 'boolean',
+            'minimum_stock_level' => 'decimal:3',
+            'reorder_quantity' => 'decimal:3',
+            'expiry_warning_days' => 'integer',
+            'alerts_enabled' => 'boolean',
         ];
     }
-
-    public function branchInventorySettings(): HasMany
-{
-    return $this->hasMany(BranchMedicineSetting::class);
-}
-
-public function saleItems(): HasMany
-{
-    return $this->hasMany(SaleItem::class);
-}
-
-    public function purchaseOrderItems(): HasMany
-{
-    return $this->hasMany(PurchaseOrderItem::class);
-}
 
     protected static function booted(): void
     {
@@ -79,21 +64,6 @@ public function saleItems(): HasMany
         return $this->belongsTo(Pharmacy::class);
     }
 
-    public function medicineBatches(): HasMany
-{
-    return $this->hasMany(MedicineBatch::class);
-}
-
-public function stockMovements(): HasMany
-{
-    return $this->hasMany(StockMovement::class);
-}
-
-public function inventoryAlerts(): HasMany
-{
-    return $this->hasMany(InventoryAlert::class);
-}
-
     public function medicine(): BelongsTo
     {
         return $this->belongsTo(Medicine::class);
@@ -101,9 +71,56 @@ public function inventoryAlerts(): HasMany
 
     public function createdByUser(): BelongsTo
     {
-        return $this->belongsTo(
-            User::class,
-            'created_by_user_id',
-        );
+        return $this->belongsTo(User::class, 'created_by_user_id');
+    }
+
+    public function branchInventorySettings(): HasMany
+    {
+        return $this->hasMany(BranchMedicineSetting::class);
+    }
+
+    public function medicineBatches(): HasMany
+    {
+        return $this->hasMany(MedicineBatch::class);
+    }
+
+    public function stockMovements(): HasMany
+    {
+        return $this->hasMany(StockMovement::class);
+    }
+
+    public function inventoryAlerts(): HasMany
+    {
+        return $this->hasMany(InventoryAlert::class);
+    }
+
+    public function saleItems(): HasMany
+    {
+        return $this->hasMany(SaleItem::class);
+    }
+
+    public function purchaseOrderItems(): HasMany
+    {
+        return $this->hasMany(PurchaseOrderItem::class);
+    }
+
+    public function marketplaceOffers(): HasMany
+    {
+        return $this->hasMany(MarketplaceOffer::class);
+    }
+
+    public function marketplaceCartItems(): HasMany
+    {
+        return $this->hasMany(MarketplaceCartItem::class);
+    }
+
+    public function marketplaceOrderItems(): HasMany
+    {
+        return $this->hasMany(MarketplaceOrderItem::class);
+    }
+
+    public function marketplaceReservations(): HasMany
+    {
+        return $this->hasMany(MarketplaceStockReservation::class);
     }
 }

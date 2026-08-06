@@ -12,81 +12,63 @@ class RolePermissionSeeder extends Seeder
     public function run(): void
     {
         $guard = 'web';
-
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         $permissions = [
-            // Platform administration
             'platform.dashboard.view',
             'platform.users.view',
             'platform.users.manage',
             'platform.roles.manage',
             'platform.audit.view',
-
-            // Partner pharmacies
             'pharmacies.view',
             'pharmacies.manage',
             'pharmacies.approve',
             'pharmacies.suspend',
-
-            // SaaS subscriptions and platform finance
             'subscriptions.view',
             'subscriptions.manage',
             'platform.finance.view',
             'platform.finance.manage',
-
-            // Platform support and compliance
             'compliance.review',
             'support.manage',
-
-            // Pharmacy administration
             'pharmacy.dashboard.view',
             'pharmacy.settings.manage',
             'branches.manage',
             'employees.manage',
-
-            // Medicines and stock
             'medicines.view',
             'medicines.manage',
             'stock.view',
             'stock.manage',
             'stock.adjust',
             'stock.transfer',
-
-            // Purchases and suppliers
             'purchases.view',
             'purchases.manage',
-
-            // Customers
-'customers.view',
-'customers.manage',
-
-            // Sales
+            'customers.view',
+            'customers.manage',
             'sales.view',
             'sales.manage',
             'sales.void',
             'sales.create',
             'sales.cancel',
             'sales.refund',
-
-            // Prescriptions and patients
             'prescriptions.view',
+            'prescriptions.manage',
             'prescriptions.validate',
+            'prescriptions.dispense',
             'patients.view',
             'patients.manage',
-            'prescriptions.view',
-'prescriptions.manage',
-'prescriptions.validate',
-'prescriptions.dispense',
-
-            // Delivery
             'deliveries.view',
             'deliveries.manage',
-
-            // Pharmacy finance and reports
             'pharmacy.finance.view',
             'pharmacy.finance.manage',
             'reports.view',
+            'marketplace.offers.view',
+            'marketplace.offers.manage',
+            'marketplace.orders.view',
+            'marketplace.orders.manage',
+            'marketplace.prescriptions.review',
+            'wallets.view',
+            'wallets.manage',
+            'wallets.funding.review',
         ];
 
         foreach ($permissions as $permission) {
@@ -106,13 +88,12 @@ class RolePermissionSeeder extends Seeder
                 || str_starts_with($permission, 'prescriptions.')
                 || str_starts_with($permission, 'patients.')
                 || str_starts_with($permission, 'deliveries.')
+                || str_starts_with($permission, 'marketplace.')
                 || $permission === 'reports.view',
         ));
 
         $roles = [
-            // Platform roles
             'super_admin' => $permissions,
-
             'platform_admin' => [
                 'platform.dashboard.view',
                 'platform.users.view',
@@ -127,8 +108,10 @@ class RolePermissionSeeder extends Seeder
                 'platform.finance.view',
                 'platform.finance.manage',
                 'support.manage',
+                'wallets.view',
+                'wallets.manage',
+                'wallets.funding.review',
             ],
-
             'compliance_officer' => [
                 'platform.dashboard.view',
                 'platform.audit.view',
@@ -137,7 +120,6 @@ class RolePermissionSeeder extends Seeder
                 'pharmacies.suspend',
                 'compliance.review',
             ],
-
             'finance_manager' => [
                 'platform.dashboard.view',
                 'platform.audit.view',
@@ -146,28 +128,26 @@ class RolePermissionSeeder extends Seeder
                 'subscriptions.manage',
                 'platform.finance.view',
                 'platform.finance.manage',
+                'wallets.view',
+                'wallets.manage',
+                'wallets.funding.review',
             ],
-
             'support_agent' => [
                 'platform.dashboard.view',
                 'platform.users.view',
                 'pharmacies.view',
                 'support.manage',
+                'wallets.view',
             ],
-
-            // Pharmacy roles
             'pharmacy_owner' => $pharmacyPermissions,
-
             'branch_manager' => [
                 'pharmacy.dashboard.view',
                 'branches.manage',
                 'employees.manage',
                 'medicines.view',
-                'customers.view',
-'customers.manage',
-                'sales.manage',
-                'sales.void',
                 'medicines.manage',
+                'customers.view',
+                'customers.manage',
                 'stock.view',
                 'stock.manage',
                 'stock.adjust',
@@ -175,6 +155,8 @@ class RolePermissionSeeder extends Seeder
                 'purchases.view',
                 'purchases.manage',
                 'sales.view',
+                'sales.manage',
+                'sales.void',
                 'sales.create',
                 'sales.cancel',
                 'sales.refund',
@@ -186,16 +168,20 @@ class RolePermissionSeeder extends Seeder
                 'deliveries.manage',
                 'pharmacy.finance.view',
                 'reports.view',
+                'marketplace.offers.view',
+                'marketplace.offers.manage',
+                'marketplace.orders.view',
+                'marketplace.orders.manage',
+                'marketplace.prescriptions.review',
             ],
-
             'pharmacist' => [
                 'pharmacy.dashboard.view',
                 'medicines.view',
                 'stock.view',
                 'sales.view',
-                'customers.view',
-'customers.manage',
                 'sales.create',
+                'customers.view',
+                'customers.manage',
                 'prescriptions.view',
                 'prescriptions.manage',
                 'prescriptions.dispense',
@@ -204,21 +190,24 @@ class RolePermissionSeeder extends Seeder
                 'patients.manage',
                 'deliveries.view',
                 'reports.view',
+                'marketplace.offers.view',
+                'marketplace.orders.view',
+                'marketplace.orders.manage',
+                'marketplace.prescriptions.review',
             ],
-
             'pharmacy_assistant' => [
                 'pharmacy.dashboard.view',
                 'medicines.view',
                 'customers.view',
-'customers.manage',
+                'customers.manage',
                 'stock.view',
                 'sales.view',
                 'sales.create',
                 'prescriptions.view',
-                'patients.view',
                 'prescriptions.manage',
+                'patients.view',
+                'marketplace.orders.view',
             ],
-
             'stock_manager' => [
                 'pharmacy.dashboard.view',
                 'medicines.view',
@@ -230,20 +219,21 @@ class RolePermissionSeeder extends Seeder
                 'purchases.view',
                 'purchases.manage',
                 'reports.view',
+                'marketplace.offers.view',
+                'marketplace.offers.manage',
             ],
-
             'cashier' => [
                 'pharmacy.dashboard.view',
                 'medicines.view',
                 'stock.view',
                 'customers.view',
-'customers.manage',
+                'customers.manage',
                 'sales.manage',
                 'sales.view',
                 'sales.create',
                 'patients.view',
+                'marketplace.orders.view',
             ],
-
             'accountant' => [
                 'pharmacy.dashboard.view',
                 'purchases.view',
@@ -252,8 +242,8 @@ class RolePermissionSeeder extends Seeder
                 'pharmacy.finance.view',
                 'pharmacy.finance.manage',
                 'reports.view',
+                'marketplace.orders.view',
             ],
-
             'delivery_coordinator' => [
                 'pharmacy.dashboard.view',
                 'sales.view',
@@ -261,7 +251,10 @@ class RolePermissionSeeder extends Seeder
                 'patients.view',
                 'deliveries.view',
                 'deliveries.manage',
+                'marketplace.orders.view',
+                'marketplace.orders.manage',
             ],
+            'client' => [],
         ];
 
         foreach ($roles as $roleName => $rolePermissions) {

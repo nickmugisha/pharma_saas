@@ -1,0 +1,49 @@
+﻿Pharmacy,Branch,Medicine,SKU,Selling price BIF,Online price BIF,Opening stock,Batch A expiry,Batch B expiry,Pickup,Delivery,Delivery fee BIF,Max order qty,Preparation minutes
+Pharmacie Horizon Santé,Horizon Santé — Rohero,ParaCare,HZN-PARACARE-500,2800,2500,80,+10 months,+22 months,Yes,Yes,3000,10,20
+Pharmacie Horizon Santé,Horizon Santé — Rohero,CetiRelief,HZN-CETIRELIEF-10,5300,5000,97,+10 months,+22 months,Yes,Yes,3000,10,25
+Pharmacie Horizon Santé,Horizon Santé — Rohero,ORS Balance,HZN-ORS-BALANCE,1500,1200,114,+10 months,+22 months,Yes,Yes,3000,10,30
+Pharmacie Horizon Santé,Horizon Santé — Rohero,QuiniSafe,HZN-QUINISAFE-300,12300,12000,131,+10 months,+22 months,Yes,No,0,2,20
+Pharmacie Horizon Santé,Horizon Santé — Rohero,FeverEase Junior,HZN-FEVEREASE-JUNI,6800,6500,148,+10 months,+22 months,Yes,Yes,3000,10,25
+Pharmacie Horizon Santé,Horizon Santé — Rohero,AllerClear Kids,HZN-ALLERCLEAR-KID,7500,7200,165,+10 months,+22 months,Yes,Yes,3000,10,30
+Pharmacie Horizon Santé,Horizon Santé — Rohero,ZincPlus,HZN-ZINCPLUS-20,5100,4800,92,+10 months,+22 months,Yes,Yes,3000,10,20
+Pharmacie Horizon Santé,Horizon Santé — Rohero,VitaC Boost,HZN-VITAC-BOOST-50,8800,8500,109,+10 months,+22 months,Yes,Yes,3000,10,25
+Pharmacie Horizon Santé,Horizon Santé — Rohero,IbuEase,HZN-IBUEASE-400,4800,4500,126,+10 months,+22 months,Yes,Yes,3000,5,30
+Pharmacie Horizon Santé,Horizon Santé — Rohero,GastroCalm,HZN-GASTROCALM-10,8100,7800,143,+10 months,+22 months,Yes,Yes,3000,5,20
+Pharmacie Horizon Santé,Horizon Santé — Rohero,CoughEase DM,HZN-COUGHEASE-DM,9300,9000,160,+10 months,+22 months,Yes,Yes,3000,5,25
+Pharmacie Horizon Santé,Horizon Santé — Rohero,IronCare Plus,HZN-IRONCARE-PLUS,10800,10500,87,+10 months,+22 months,Yes,Yes,3000,5,30
+Pharmacie Horizon Santé,Horizon Santé — Rohero,AmoxiGuard,HZN-AMOXIGUARD-500,9300,9000,104,+10 months,+22 months,Yes,No,0,2,20
+Pharmacie Horizon Santé,Horizon Santé — Rohero,MetroSafe,HZN-METROSAFE-400,7800,7500,121,+10 months,+22 months,Yes,No,0,2,25
+Pharmacie Horizon Santé,Horizon Santé — Rohero,ArteLum,HZN-ARTELUM-20-120,18300,18000,138,+10 months,+22 months,Yes,No,0,2,30
+Pharmacie Horizon Santé,Horizon Santé — Rohero,InsuCare R,HZN-INSUCARE-R,22800,22500,155,+10 months,+22 months,Yes,No,0,2,20
+Pharmacie Umoja Care,Umoja Care — Kamenge,ParaCare,UMO-PARACARE-500,2700,2400,103,+10 months,+22 months,Yes,Yes,2500,10,25
+Pharmacie Umoja Care,Umoja Care — Kamenge,CetiRelief,UMO-CETIRELIEF-10,5000,4700,120,+10 months,+22 months,Yes,Yes,2500,10,30
+Pharmacie Umoja Care,Umoja Care — Kamenge,ORS Balance,UMO-ORS-BALANCE,1400,1100,137,+10 months,+22 months,Yes,Yes,2500,10,35
+Pharmacie Umoja Care,Umoja Care — Kamenge,QuiniSafe,UMO-QUINISAFE-300,11600,11300,154,+10 months,+22 months,Yes,No,0,2,25
+Pharmacie Umoja Care,Umoja Care — Kamenge,FeverEase Junior,UMO-FEVEREASE-JUNI,6400,6100,81,+10 months,+22 months,Yes,Yes,2500,10,30
+Pharmacie Umoja Care,Umoja Care — Kamenge,AllerClear Kids,UMO-ALLERCLEAR-KID,7100,6800,98,+10 months,+22 months,Yes,Yes,2500,10,35
+Pharmacie Umoja Care,Umoja Care — Kamenge,ZincPlus,UMO-ZINCPLUS-20,4800,4500,115,+10 months,+22 months,Yes,Yes,2500,10,25
+Pharmacie Umoja Care,Umoja Care — Kamenge,VitaC Boost,UMO-VITAC-BOOST-50,8300,8000,132,+10 months,+22 months,Yes,Yes,2500,10,30
+Pharmacie Umoja Care,Umoja Care — Kamenge,IbuEase,UMO-IBUEASE-400,4500,4200,149,+10 months,+22 months,Yes,Yes,2500,5,35
+Pharmacie Umoja Care,Umoja Care — Kamenge,GastroCalm,UMO-GASTROCALM-10,7600,7300,166,+10 months,+22 months,Yes,Yes,2500,5,25
+Pharmacie Umoja Care,Umoja Care — Kamenge,CoughEase DM,UMO-COUGHEASE-DM,8800,8500,93,+10 months,+22 months,Yes,Yes,2500,5,30
+Pharmacie Umoja Care,Umoja Care — Kamenge,IronCare Plus,UMO-IRONCARE-PLUS,10200,9900,110,+10 months,+22 months,Yes,Yes,2500,5,35
+Pharmacie Umoja Care,Umoja Care — Kamenge,AmoxiGuard,UMO-AMOXIGUARD-500,8800,8500,127,+10 months,+22 months,Yes,No,0,2,25
+Pharmacie Umoja Care,Umoja Care — Kamenge,MetroSafe,UMO-METROSAFE-400,7300,7000,144,+10 months,+22 months,Yes,No,0,2,30
+Pharmacie Umoja Care,Umoja Care — Kamenge,ArteLum,UMO-ARTELUM-20-120,17200,16900,161,+10 months,+22 months,Yes,No,0,2,35
+Pharmacie Umoja Care,Umoja Care — Kamenge,InsuCare R,UMO-INSUCARE-R,21500,21200,88,+10 months,+22 months,Yes,No,0,2,25
+Pharmacie Tanganyika Plus,Tanganyika Plus — Kinindo,ParaCare,TGP-PARACARE-500,3000,2700,126,+10 months,+22 months,Yes,Yes,4000,10,35
+Pharmacie Tanganyika Plus,Tanganyika Plus — Kinindo,CetiRelief,TGP-CETIRELIEF-10,5700,5400,143,+10 months,+22 months,Yes,Yes,4000,10,40
+Pharmacie Tanganyika Plus,Tanganyika Plus — Kinindo,ORS Balance,TGP-ORS-BALANCE,1600,1300,160,+10 months,+22 months,Yes,Yes,4000,10,45
+Pharmacie Tanganyika Plus,Tanganyika Plus — Kinindo,QuiniSafe,TGP-QUINISAFE-300,13300,13000,87,+10 months,+22 months,Yes,No,0,2,35
+Pharmacie Tanganyika Plus,Tanganyika Plus — Kinindo,FeverEase Junior,TGP-FEVEREASE-JUNI,7300,7000,104,+10 months,+22 months,Yes,Yes,4000,10,40
+Pharmacie Tanganyika Plus,Tanganyika Plus — Kinindo,AllerClear Kids,TGP-ALLERCLEAR-KID,8100,7800,121,+10 months,+22 months,Yes,Yes,4000,10,45
+Pharmacie Tanganyika Plus,Tanganyika Plus — Kinindo,ZincPlus,TGP-ZINCPLUS-20,5500,5200,138,+10 months,+22 months,Yes,Yes,4000,10,35
+Pharmacie Tanganyika Plus,Tanganyika Plus — Kinindo,VitaC Boost,TGP-VITAC-BOOST-50,9500,9200,155,+10 months,+22 months,Yes,Yes,4000,10,40
+Pharmacie Tanganyika Plus,Tanganyika Plus — Kinindo,IbuEase,TGP-IBUEASE-400,5200,4900,82,+10 months,+22 months,Yes,Yes,4000,5,45
+Pharmacie Tanganyika Plus,Tanganyika Plus — Kinindo,GastroCalm,TGP-GASTROCALM-10,8700,8400,99,+10 months,+22 months,Yes,Yes,4000,5,35
+Pharmacie Tanganyika Plus,Tanganyika Plus — Kinindo,CoughEase DM,TGP-COUGHEASE-DM,10000,9700,116,+10 months,+22 months,Yes,Yes,4000,5,40
+Pharmacie Tanganyika Plus,Tanganyika Plus — Kinindo,IronCare Plus,TGP-IRONCARE-PLUS,11600,11300,133,+10 months,+22 months,Yes,Yes,4000,5,45
+Pharmacie Tanganyika Plus,Tanganyika Plus — Kinindo,AmoxiGuard,TGP-AMOXIGUARD-500,10000,9700,150,+10 months,+22 months,Yes,No,0,2,35
+Pharmacie Tanganyika Plus,Tanganyika Plus — Kinindo,MetroSafe,TGP-METROSAFE-400,8400,8100,167,+10 months,+22 months,Yes,No,0,2,40
+Pharmacie Tanganyika Plus,Tanganyika Plus — Kinindo,ArteLum,TGP-ARTELUM-20-120,19700,19400,94,+10 months,+22 months,Yes,No,0,2,45
+Pharmacie Tanganyika Plus,Tanganyika Plus — Kinindo,InsuCare R,TGP-INSUCARE-R,24600,24300,111,+10 months,+22 months,Yes,No,0,2,35

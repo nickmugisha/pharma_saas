@@ -8,7 +8,10 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-
 Schedule::command('inventory:sync-alerts')
     ->everyFifteenMinutes()
+    ->withoutOverlapping();
+
+Schedule::command('marketplace:release-expired-reservations')
+    ->everyMinute()
     ->withoutOverlapping();

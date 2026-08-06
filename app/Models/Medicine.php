@@ -6,13 +6,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Medicine extends Model
 {
     use HasFactory, SoftDeletes;
+
+    public const ONLINE_OTC = 'otc';
+    public const ONLINE_PRESCRIPTION_REQUIRED = 'prescription_required';
+    public const ONLINE_PHARMACIST_REVIEW = 'pharmacist_review';
+    public const ONLINE_IN_STORE_ONLY = 'in_store_only';
 
     protected $fillable = [
         'brand_name',
@@ -25,11 +31,13 @@ class Medicine extends Model
         'barcode',
         'regulatory_code',
         'description',
+        'marketplace_summary',
         'indications',
         'contraindications',
         'side_effects',
         'storage_instructions',
         'prescription_status',
+        'online_sale_mode',
         'approval_status',
         'submitted_by_pharmacy_id',
         'submitted_by_user_id',
@@ -38,12 +46,15 @@ class Medicine extends Model
         'reviewed_at',
         'review_notes',
         'is_active',
+        'is_marketplace_featured',
     ];
 
     protected $attributes = [
         'prescription_status' => 'otc',
+        'online_sale_mode' => self::ONLINE_OTC,
         'approval_status' => 'draft',
         'is_active' => true,
+        'is_marketplace_featured' => false,
     ];
 
     protected function casts(): array
@@ -52,6 +63,7 @@ class Medicine extends Model
             'submitted_at' => 'datetime',
             'reviewed_at' => 'datetime',
             'is_active' => 'boolean',
+            'is_marketplace_featured' => 'boolean',
         ];
     }
 
@@ -67,10 +79,7 @@ class Medicine extends Model
                 return;
             }
 
-            if (
-                $medicine->approval_status === 'pending_review'
-                && ! $medicine->submitted_at
-            ) {
+            if ($medicine->approval_status === 'pending_review' && ! $medicine->submitted_at) {
                 $medicine->submitted_at = now();
             }
 
@@ -88,25 +97,49 @@ class Medicine extends Model
         });
     }
 
+    public function requiresPrescriptionForOnlineOrder(): bool
+    {
+        return $this->online_sale_mode === self::ONLINE_PRESCRIPTION_REQUIRED;
+    }
+
+    public function requiresPharmacistReviewForOnlineOrder(): bool
+    {
+        return in_array($this->online_sale_mode, [
+            self::ONLINE_PRESCRIPTION_REQUIRED,
+            self::ONLINE_PHARMACIST_REVIEW,
+        ], true);
+    }
+
+    public function isOnlineOrderable(): bool
+    {
+        return $this->online_sale_mode !== self::ONLINE_IN_STORE_ONLY;
+    }
+
+    public function getMarketplaceImageUrlAttribute(): ?string
+    {
+        $image = $this->relationLoaded('primaryImage')
+            ? $this->primaryImage
+            : $this->primaryImage()->first();
+
+        if (! $image) {
+            return null;
+        }
+
+        return Storage::disk($image->disk)->url($image->path);
+    }
+
     private static function generateUniqueSlug(Medicine $medicine): string
     {
-        $base = Str::slug(
-            collect([
-                $medicine->brand_name,
-                $medicine->strength,
-            ])->filter()->implode(' '),
-        );
+        $base = Str::slug(collect([
+            $medicine->brand_name,
+            $medicine->strength,
+        ])->filter()->implode(' '));
 
         $base = $base !== '' ? $base : 'medicine';
-
         $slug = $base;
         $number = 2;
 
-        while (
-            static::withTrashed()
-                ->where('slug', $slug)
-                ->exists()
-        ) {
+        while (static::withTrashed()->where('slug', $slug)->exists()) {
             $slug = "{$base}-{$number}";
             $number++;
         }
@@ -116,10 +149,7 @@ class Medicine extends Model
 
     public function category(): BelongsTo
     {
-        return $this->belongsTo(
-            MedicineCategory::class,
-            'medicine_category_id',
-        );
+        return $this->belongsTo(MedicineCategory::class, 'medicine_category_id');
     }
 
     public function dosageForm(): BelongsTo
@@ -134,38 +164,28 @@ class Medicine extends Model
 
     public function submittedByPharmacy(): BelongsTo
     {
-        return $this->belongsTo(
-            Pharmacy::class,
-            'submitted_by_pharmacy_id',
-        );
+        return $this->belongsTo(Pharmacy::class, 'submitted_by_pharmacy_id');
     }
 
     public function submittedByUser(): BelongsTo
     {
-        return $this->belongsTo(
-            User::class,
-            'submitted_by_user_id',
-        );
+        return $this->belongsTo(User::class, 'submitted_by_user_id');
     }
 
     public function reviewedByUser(): BelongsTo
     {
-        return $this->belongsTo(
-            User::class,
-            'reviewed_by_user_id',
-        );
+        return $this->belongsTo(User::class, 'reviewed_by_user_id');
     }
 
     public function ingredients(): HasMany
     {
-        return $this->hasMany(MedicineIngredient::class)
-            ->orderBy('sort_order');
+        return $this->hasMany(MedicineIngredient::class)->orderBy('sort_order');
     }
 
     public function pharmacyListings(): HasMany
-{
-    return $this->hasMany(PharmacyMedicine::class);
-}
+    {
+        return $this->hasMany(PharmacyMedicine::class);
+    }
 
     public function images(): HasMany
     {
@@ -175,8 +195,12 @@ class Medicine extends Model
     }
 
     public function primaryImage(): HasOne
-{
-    return $this->hasOne(MedicineImage::class)
-        ->where('is_primary', true);
-}
+    {
+        return $this->hasOne(MedicineImage::class)->where('is_primary', true);
+    }
+
+    public function marketplaceOrderItems(): HasMany
+    {
+        return $this->hasMany(MarketplaceOrderItem::class);
+    }
 }

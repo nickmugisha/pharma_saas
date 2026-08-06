@@ -2,22 +2,22 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Dashboard as SuperAdminDashboard;
+use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets\AccountWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Filament\Auth\MultiFactor\App\AppAuthentication;
+use Filament\View\PanelsRenderHook;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -30,37 +30,53 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->passwordReset()
             ->emailVerification()
-->emailChangeVerification()
-->multiFactorAuthentication([
-    AppAuthentication::make()
-        ->recoverable()
-        ->brandName('Pharma SaaS — Super Admin'),
-])
-->profile(isSimple: false)
-->revealablePasswords(false)
-            ->brandName('Pharma SaaS — Super Admin')
-            ->brandLogo(asset('images/pharma-saas-super-admin.svg'))
-->brandLogoHeight('2.75rem')
-->favicon(asset('images/pharma-saas-favicon.svg'))
-->colors([
-    'primary' => Color::Indigo,
-])
-->navigationGroups([
-    'Platform',
-    'Partner Pharmacies',
-    'Subscriptions & Finance',
-    'Compliance',
-    'System Administration',
-])
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
-            ->pages([
-                Dashboard::class,
+            ->emailChangeVerification()
+            ->multiFactorAuthentication([
+                AppAuthentication::make()
+                    ->recoverable()
+                    ->brandName('Home Pharma SaaS — Super Admin')
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
-            ->widgets([
-    AccountWidget::class,
-])
+            ->profile(isSimple: false)
+            ->revealablePasswords(false)
+           ->brandName('Home Pharma SaaS — Super Admin')
+->brandLogo(
+    asset('images/branding/pharma-saas-logo.png')
+)
+->brandLogoHeight('4.25rem')
+->favicon(
+    asset('images/branding/favicon.png')
+)
+->renderHook(
+    PanelsRenderHook::BODY_START,
+    fn (): string =>
+        view('components.login-loader')->render(),
+)
+            ->colors([
+                'primary' => Color::Indigo,
+            ])
+            ->navigationGroups([
+                'Platform',
+                'Partner Pharmacies',
+                'Subscriptions & Finance',
+                'Compliance',
+                'System Administration',
+            ])
+            ->discoverResources(
+                in: app_path('Filament/Resources'),
+                for: 'App\Filament\Resources',
+            )
+            ->discoverPages(
+                in: app_path('Filament/Pages'),
+                for: 'App\Filament\Pages',
+            )
+            ->pages([
+                SuperAdminDashboard::class,
+            ])
+            ->discoverWidgets(
+                in: app_path('Filament/Widgets'),
+                for: 'App\Filament\Widgets',
+            )
+            ->widgets([])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

@@ -133,4 +133,19 @@ public function suppliers(): HasMany
             }
         });
     }
+
+    public function marketplaceOffers(): HasMany
+    {
+        return $this->hasMany(MarketplaceOffer::class);
+    }
+
+    public function marketplaceOrders(): HasMany
+    {
+        return $this->hasMany(MarketplaceOrder::class);
+    }
+
+    public function marketplaceReservations(): HasMany
+    {
+        return $this->hasMany(MarketplaceStockReservation::class);
+    }
 }

@@ -78,7 +78,7 @@ class PharmacyMedicineForm
                             ->default('BIF'),
                     ]),
 
-                Section::make('Availability and online shop')
+                Section::make('Availability and public marketplace')
                     ->columns(2)
                     ->schema([
                         Toggle::make('is_available')
@@ -86,7 +86,7 @@ class PharmacyMedicineForm
                             ->default(true),
 
                         Toggle::make('is_visible_online')
-                            ->label('Visible in future online shop')
+                            ->label('Visible in public marketplace')
                             ->default(false),
 
                         Select::make('status')

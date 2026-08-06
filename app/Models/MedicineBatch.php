@@ -100,4 +100,9 @@ public function saleItemBatches(): HasMany
     {
         return $this->hasMany(StockMovement::class);
     }
+
+    public function marketplaceReservations(): HasMany
+    {
+        return $this->hasMany(MarketplaceStockReservation::class);
+    }
 }

@@ -33,6 +33,18 @@ class UsersTable
                     ->separator(', ')
                     ->placeholder('No role'),
 
+                TextColumn::make('pharmacy.name')
+                    ->label('Pharmacy')
+                    ->searchable()
+                    ->sortable()
+                    ->placeholder('Platform account'),
+
+                TextColumn::make('pharmacyBranch.name')
+                    ->label('Branch')
+                    ->searchable()
+                    ->sortable()
+                    ->placeholder('Not assigned'),
+
                 IconColumn::make('is_active')
                     ->label('Active')
                     ->boolean(),
@@ -70,6 +82,12 @@ class UsersTable
                 SelectFilter::make('roles')
                     ->label('Role')
                     ->relationship('roles', 'name')
+                    ->searchable()
+                    ->preload(),
+
+                SelectFilter::make('pharmacy')
+                    ->label('Pharmacy')
+                    ->relationship('pharmacy', 'name')
                     ->searchable()
                     ->preload(),
             ])
